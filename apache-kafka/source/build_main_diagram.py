@@ -185,81 +185,8 @@ elements.append(line(530, LEG_Y + 7, 580, LEG_Y + 7, color="#888", dashed=True))
 elements.append(text(590, LEG_Y - 1, "= replication (follower pulls)", size=12, w=220, h=18, align="left"))
 
 # ============================================================
-# SEQUENCE DIAGRAM (y = 740..1500)
-# ============================================================
-SEQ_TOP = 740
-elements.append(text(280, SEQ_TOP, "Write Path Sequence — Producer → Leader → Followers → Consumer  (acks=all, idempotence on)",
-                     size=18, bold=True, w=720, h=28))
-
-# Lifelines
-lifelines = [
-    {"x": 80,  "label": "Producer",         "bg": PRODUCER_BG, "s": PRODUCER_S},
-    {"x": 290, "label": "Leader Broker",    "bg": BROKER_BG,   "s": BROKER_S},
-    {"x": 510, "label": "Follower Broker",  "bg": BROKER_BG,   "s": BROKER_S},
-    {"x": 720, "label": "Page Cache + Disk","bg": "#fff3bf",   "s": "#e67700"},
-    {"x": 930, "label": "Consumer",         "bg": CONSUMER_BG, "s": CONSUMER_S},
-]
-HEADER_Y = SEQ_TOP + 50
-HEADER_H = 50
-LL_TOP = HEADER_Y + HEADER_H
-LL_BOT = LL_TOP + 700
-
-for ll in lifelines:
-    elements.append(rect(ll["x"], HEADER_Y, 160, HEADER_H, stroke=ll["s"], bg=ll["bg"]))
-    elements.append(text(ll["x"], HEADER_Y + 14, ll["label"], size=14, bold=True, w=160, h=24, color=ll["s"]))
-    cx = ll["x"] + 80
-    elements.append(line(cx, LL_TOP, cx, LL_BOT, color="#adb5bd", sw=1, dashed=True))
-
-# Helper for sequence message
-def seq_msg(y, from_idx, to_idx, label, color="#1e1e1e", dashed=False):
-    fx = lifelines[from_idx]["x"] + 80
-    tx = lifelines[to_idx]["x"] + 80
-    if from_idx == to_idx:
-        # self-message — small loop arrow + label
-        elements.append(arrow(fx, y, fx + 60, y, color=color, dashed=dashed, sw=2))
-        elements.append(arrow(fx + 60, y, fx + 60, y + 18, color=color, dashed=dashed, sw=2))
-        elements.append(arrow(fx + 60, y + 18, fx + 4, y + 18, color=color, dashed=dashed, sw=2))
-        elements.append(text(fx + 70, y - 4, label, size=11, w=240, h=18, align="left", color=color))
-    else:
-        elements.append(arrow(fx, y, tx, y, color=color, dashed=dashed, sw=2))
-        mid_x = min(fx, tx) + 6
-        elements.append(text(mid_x, y - 18, label, size=11,
-                             w=abs(tx - fx) - 10, h=18, align="left", color=color))
-
-y = LL_TOP + 30
-step = 56
-seq_msg(y, 0, 1, "1. ProduceRequest(acks=all, batch, PID+seq)", color=PRODUCER_S); y += step
-seq_msg(y, 1, 3, "2. append batch → log segment (page cache)", color=BROKER_S); y += step
-seq_msg(y, 2, 1, "3. (follower) FetchRequest", color="#868e96", dashed=True); y += step
-seq_msg(y, 1, 2, "4. records up to offset N", color=BROKER_S); y += step
-seq_msg(y, 2, 3, "5. follower also persists locally", color=BROKER_S); y += step
-seq_msg(y, 1, 1, "6. ISR caught up → advance High Watermark", color=KRAFT_S); y += step + 10
-seq_msg(y, 1, 0, "7. ProduceResponse OK (offset, partition)", color=PRODUCER_S); y += step + 14
-seq_msg(y, 4, 1, "8. FetchRequest(partition, offset=X)", color=CONSUMER_S); y += step
-seq_msg(y, 1, 4, "9. records (only those ≤ HW)", color=CONSUMER_S); y += step
-seq_msg(y, 4, 4, "10. process records → side effects", color=CONSUMER_S); y += step + 10
-seq_msg(y, 4, 1, "11. OffsetCommit → __consumer_offsets", color=CONSUMER_S); y += step
-
-# Phase brackets
-elements.append(text(80, LL_TOP + 4, "── PRODUCE PHASE ──", size=12, bold=True, w=850, h=18, align="left", color="#495057"))
-elements.append(text(80, LL_TOP + 30 + step * 6 + 2, "── ACK RETURNED ──", size=12, bold=True, w=850, h=18, align="left", color="#495057"))
-elements.append(text(80, LL_TOP + 30 + step * 7 + 14, "── CONSUME PHASE ──", size=12, bold=True, w=850, h=18, align="left", color="#495057"))
-
-# Footer notes
-NOTES_Y = LL_BOT + 30
-elements.append(text(80, NOTES_Y, "Durability gates:", size=14, bold=True, w=300, h=20, align="left", color="#1e1e1e"))
-notes = [
-    "• acks=0 → producer doesn't wait. Loses data if leader crashes.",
-    "• acks=1 → wait for leader's local write only. Loses data if leader crashes before step 4.",
-    "• acks=all + min.insync.replicas≥2 → wait for full ISR. The durable choice.",
-    "• Idempotent producer (PID + sequence) silently dedupes retries on the broker.",
-    "• read_committed consumers skip records inside aborted transactions.",
-]
-for i, n in enumerate(notes):
-    elements.append(text(80, NOTES_Y + 26 + i * 22, n, size=12, w=900, h=18, align="left"))
-
-# ============================================================
 # Write file
+# (The write-path sequence diagram lives in build_write_sequence.py.)
 # ============================================================
 out = {
     "type": "excalidraw",
