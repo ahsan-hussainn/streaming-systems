@@ -39,7 +39,7 @@ Each broker hosts a mix of leader partitions (red borders) and follower partitio
 
 Every topic in Kafka is split into one or more partitions. A partition is the actual physical thing — an ordered, append-only log file on disk.
 
-![Topic 'orders' split into four partition tapes, each showing records at sequential offsets](./images/partition_log.png)
+![Topic 'orders' split into four partition tapes, each showing records at sequential offsets](./images/kafka-partition.png)
 *A topic is split into N partitions. Each partition is its own ordered log, with records appended at the tail.*
 
 Each record gets a unique 64-bit integer called its **offset**. Offsets are monotonic within a partition; once assigned, they never change. Offset 0 is the oldest record still on disk; the highest offset is the most recent. Append-only means records are never modified or deleted in place — they age out only when retention (time- or size-based) deletes whole log segments.
@@ -53,7 +53,7 @@ There is no global ordering *across* partitions. That's the deliberate trade-off
 
 ### How a producer picks a partition
 
-![Three ProducerRecords with different keys flowing through a hash-and-modulo step into specific partitions](./images/key_hashing.png)
+![Three ProducerRecords with different keys flowing through a hash-and-modulo step into specific partitions](./images/kafka-key-hashing.png)
 *The producer hashes the key and takes modulo N. Same key → same partition, always.*
 
 When your application calls `producer.send(record)`, the producer client:
@@ -70,7 +70,7 @@ A topic is created with a **replication factor**. RF=2 means every partition has
 
 Among the copies of a partition, exactly one is the **leader**. The rest are **followers**.
 
-![One partition with its leader on Broker 1 and follower on Broker 2; follower trails by two offsets and pulls via FetchRequest; High Watermark marked at offset 7](./images/leader_follower.png)
+![One partition with its leader on Broker 1 and follower on Broker 2; follower trails by two offsets and pulls via FetchRequest; High Watermark marked at offset 7](./images/kafka-leader-follower.png)
 *The leader holds 9 records (LEO = 9). The follower has caught up to offset 6. Only records below the High Watermark (HW = 7) are visible to consumers.*
 
 The leader does all the work that matters:
@@ -113,7 +113,7 @@ The interesting unit is the **consumer group**. A consumer group is a set of con
 1. **Each partition is read by exactly one consumer in the group.** If a topic has 4 partitions and the group has 2 consumers, each consumer is assigned 2 partitions. If the group has 4 consumers, each gets 1 partition. If the group has 8 consumers, 4 of them sit idle — you can never have more *active* consumers in a group than the topic has partitions.
 2. **Different consumer groups are independent.** They don't share work, they don't share progress, they don't know about each other.
 
-![A single partition log with two consumer-group pointer cards: 'analytics' at offset 4 and 'order-fulfillment' at offset 12, reading independently](./images/consumer_groups.png)
+![A single partition log with two consumer-group pointer cards: 'analytics' at offset 4 and 'order-fulfillment' at offset 12, reading independently](./images/kafka-consumer.png)
 *Two consumer groups, one log. Each tracks its own offset; one can lag without affecting the other.*
 
 Picture one partition with 15 records and two consumer groups reading it. `order-fulfillment` is at offset 12 — it's keeping up with the live stream and charging cards in near real time. `analytics` is at offset 4 — it's lagging an hour behind, batching records into a data warehouse, and that's perfectly fine.
