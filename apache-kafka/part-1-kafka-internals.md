@@ -1,5 +1,7 @@
 # Streaming Systems — Part 1: Apache Kafka Internals
 
+> 📰 **Published on Medium as *"Apache Kafka Architecture for Beginners"*** — [read the polished version here](https://medium.com/@ahsanhussain17999/apache-kafka-architecture-for-beginners-a242e0ac105c).
+
 ## Why this series
 
 If you've worked with data systems in the last decade, you've heard of Apache Kafka. You've probably used it. You may have inherited a Kafka cluster and only half-understood what the operations team meant by *leader*, *follower*, *ISR*, or *consumer lag*.

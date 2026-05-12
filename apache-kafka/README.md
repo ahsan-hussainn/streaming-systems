@@ -4,10 +4,10 @@ The Kafka portion of the Streaming Systems series.
 
 ## Articles
 
-| Part | Title | File |
-|---|---|---|
-| 1 | Apache Kafka Internals — *How a Kafka cluster is put together* | [`part-1-kafka-internals.md`](./part-1-kafka-internals.md) |
-| 2 | How One Record Travels Through Apache Kafka — *The full write-path lifecycle* | [`part-2-record-lifecycle.md`](./part-2-record-lifecycle.md) |
+| Part | Title | Source | Published |
+|---|---|---|---|
+| 1 | Apache Kafka Architecture for Beginners | [`part-1-kafka-internals.md`](./part-1-kafka-internals.md) | [Read on Medium →](https://medium.com/@ahsanhussain17999/apache-kafka-architecture-for-beginners-a242e0ac105c) |
+| 2 | How One Record Travels Through Apache Kafka | [`part-2-record-lifecycle.md`](./part-2-record-lifecycle.md) | *coming soon* |
 
 ## Companion material
 
