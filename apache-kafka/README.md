@@ -7,7 +7,7 @@ The Kafka portion of the Streaming Systems series.
 | Part | Title | Source | Published |
 |---|---|---|---|
 | 1 | Apache Kafka Architecture for Beginners | [`part-1-kafka-internals.md`](./part-1-kafka-internals.md) | [Read on Medium →](https://medium.com/@ahsanhussain17999/apache-kafka-architecture-for-beginners-a242e0ac105c) |
-| 2 | How One Record Travels Through Apache Kafka | [`part-2-record-lifecycle.md`](./part-2-record-lifecycle.md) | *coming soon* |
+| 2 | How One Record Travels Through Apache Kafka | [`part-2-record-lifecycle.md`](./part-2-record-lifecycle.md) | [Read on Medium →](https://medium.com/@ahsanhussain17999/how-one-record-travels-through-apache-kafka-e78aed234114) |
 
 ## Companion material
 

@@ -1,5 +1,7 @@
 # How One Record Travels Through Apache Kafka
 
+> 📰 **Published on Medium** — [read it here](https://medium.com/@ahsanhussain17999/how-one-record-travels-through-apache-kafka-e78aed234114).
+
 ## Where we are in the series
 
 [Part 1](./part-1-kafka-internals.md) covered the static picture — producers, brokers, partitions, leaders, followers, consumer groups.
